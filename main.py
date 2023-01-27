@@ -1,0 +1,22 @@
+from prefect import flow, task
+from typing import List
+from tutorial import *
+import httpx
+
+@task(retries=3)
+def get_stars(repo: str):
+    url = f"https://api.github.com/repos/{repo}"
+    count = httpx.get(url).json()["stargazers_count"]
+    print(f"{repo} has {count} stars!")
+
+
+@flow(name="GitHub Stars")
+def github_stars(repos: List[str]):
+    for repo in repos:
+        get_stars(repo)
+
+
+# run the flow!
+github_stars(["PrefectHQ/Prefect"])
+res = api_flow("https://catfact.ninja/fact")
+print(res)
