@@ -3,6 +3,7 @@ from typing import List
 from tutorial import *
 import httpx
 
+
 @task(retries=3)
 def get_stars(repo: str):
     url = f"https://api.github.com/repos/{repo}"
