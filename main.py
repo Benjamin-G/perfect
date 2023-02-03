@@ -20,5 +20,5 @@ def github_stars(repos: List[str]):
 
 # run the flow!
 github_stars(["PrefectHQ/Prefect"])
-res = api_flow("https://catfact.ninja/fact")
-print(res)
+results = api_flow("https://catfact.ninja/fact")
+print(results)
