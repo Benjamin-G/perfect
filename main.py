@@ -6,16 +6,18 @@ from tutorial import *
 
 
 @task(retries=3)
-def get_stars(repo: str):
+def get_stars(repo: str, client):
+    print(type(client))
     url = f"https://api.github.com/repos/{repo}"
-    count = httpx.get(url).json()["stargazers_count"]
+    count = client.get(url).json()["stargazers_count"]
     print(f"{repo} has {count} stars!")
 
 
 @flow(name="GitHub Stars")
 def github_stars(repos: List[str]):
-    for repo in repos:
-        get_stars(repo)
+    with httpx.Client() as client:
+        for repo in repos:
+            get_stars(repo, client)
 
 
 # run the flow!

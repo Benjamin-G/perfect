@@ -3,6 +3,8 @@ import os
 import sys
 from random import randrange
 
+from prefect.testing.utilities import prefect_test_harness
+
 # getting the name of the directory
 # where the file is present.
 current = os.path.dirname(os.path.realpath(__file__))
@@ -98,3 +100,12 @@ def test_copy_array_length(benchmark):
 
     res = benchmark(copy_array_length, test_arr)
     assert len(res) == len(test_arr)
+
+
+def test_github_stars(benchmark):
+    with prefect_test_harness():
+        benchmark(github_stars, ["PrefectHQ/Prefect"])
+
+
+def test_get_stars(benchmark):
+    benchmark(get_stars.fn, "PrefectHQ/Prefect", httpx.Client())

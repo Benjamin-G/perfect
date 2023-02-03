@@ -185,3 +185,4 @@ fabric.properties
 .idea
 **.benchmarks
 **.pytest_cache
+**.pymon
