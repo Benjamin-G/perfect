@@ -1,7 +1,8 @@
-from prefect import flow, task
 from typing import List
-from tutorial import *
+
 import httpx
+
+from tutorial import *
 
 
 @task(retries=3)

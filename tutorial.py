@@ -5,11 +5,13 @@ import requests
 from prefect import flow, task, unmapped
 from pydantic import BaseModel
 
+
 @task
 def call_api(url):
     response = requests.get(url)
     print(response.status_code)
     return response.json()
+
 
 @task
 def parse_fact(response):
@@ -17,17 +19,20 @@ def parse_fact(response):
     print(fact)
     return fact
 
+
 @flow
 def api_flow(url):
     fact_json = call_api(url)
     fact_text = parse_fact(fact_json)
     return fact_text
 
+
 @flow
 def common_flow(config: dict):
     print("I am a subgraph that shows up in lots of places!")
     intermediate_result = 42
     return intermediate_result
+
 
 @flow
 def main_flow():
@@ -68,10 +73,12 @@ def task_1():
     time.sleep(.005)
     pass
 
+
 @task
 def task_2():
     print("Task 2")
     pass
+
 
 @flow
 def my_flow():
@@ -80,14 +87,17 @@ def my_flow():
     # task 2 will wait for task_1 to complete
     y = task_2(wait_for=[x])
 
+
 @task
 def print_nums(nums):
     for n in nums:
         print(n)
 
+
 @task
 def square_num(num):
-    return num**2
+    return num ** 2
+
 
 @flow
 def map_flow(nums):
@@ -101,15 +111,19 @@ def map_flow(nums):
 def add_together(x, y):
     return x + y
 
+
 @flow
 def sum_it(numbers, static_value):
     futures = add_together.map(numbers, static_value)
     print(futures)
     return futures
 
+
 @task
 def sum_plus(x, static_iterable):
     return x + sum(static_iterable)
+
+
 @flow
 def sum_it_unmapped(numbers, static_iterable):
     futures = sum_plus.map(numbers, unmapped(static_iterable))
@@ -120,6 +134,7 @@ def sum_it_unmapped(numbers, static_iterable):
 @task
 def my_task_value_error():
     raise ValueError()
+
 
 @flow
 def my_flow_error():
