@@ -1,6 +1,8 @@
+from datetime import timedelta
 from typing import List
 
 import httpx
+from prefect.tasks import task_input_hash
 
 from tutorial import *
 
@@ -18,6 +20,18 @@ def github_stars(repos: List[str]):
     with httpx.Client() as client:
         for repo in repos:
             get_stars(repo, client)
+
+
+@task(cache_key_fn=task_input_hash, cache_expiration=timedelta(minutes=1))
+def hello_task(name_input):
+    # Doing some work
+    print(f"Saying hello {name_input}")
+    return "hello " + name_input
+
+
+@flow
+def hello_flow(name_input):
+    hello_task(name_input)
 
 
 # run the flow!
