@@ -1,6 +1,7 @@
-from main import *
+from main import create_dataframe
 
 
 def test_create_dataframe():
-    create_dataframe.fn()
-    assert False
+    df = create_dataframe.fn()
+    print(df.dtypes)
+    assert True
