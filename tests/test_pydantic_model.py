@@ -12,5 +12,7 @@ def test_create_dataframe_pydantic():
     # validate from a dataframe
     try:
         res = DataFrameV1Validator(df_dict=df.to_dict(orient="records"))
+        print('valid')
+        print(res)
     except ValidationError as e:
         assert False, f"'DataFrameV1Validator' raised an exception {e}"
