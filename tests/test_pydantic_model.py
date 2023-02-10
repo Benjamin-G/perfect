@@ -4,21 +4,24 @@ import numpy as np
 import pandas as pd
 import pytest
 from pandas import DataFrame
+from pydantic import ValidationError
+
+from pydantic_model import DataFrameV1Validator, create_dataframe_pydantic
 
 
-# def test_create_dataframe_pydantic():
-#     df = create_dataframe_pydantic.fn()
-#
-#     print(len(df.index))
-#     assert len(df.index) <= 10
-#
-#     # validate from a dataframe
-#     try:
-#         res = DataFrameV1Validator(df_dict=df.to_dict(orient="records"))
-#         print('valid')
-#         print(res)
-#     except ValidationError as e:
-#         assert False, f"'DataFrameV1Validator' raised an exception {e}"
+def test_create_dataframe_pydantic():
+    df = create_dataframe_pydantic.fn()
+
+    print(len(df.index))
+    assert len(df.index) <= 10
+
+    # validate from a dataframe
+    try:
+        res = DataFrameV1Validator(df_dict=df.to_dict(orient="records"))
+        print('valid')
+        print(res)
+    except ValidationError as e:
+        assert False, f"'DataFrameV1Validator' raised an exception {e}"
 
 
 @pytest.fixture(scope="session")
@@ -78,11 +81,8 @@ def test_df_mutation_three(benchmark, create_df):
     assert len(create_df) == len(df)
 
 
-def f(x):
-    return x * (x - 1)
-
-
 def integrate_f(a, b, N):
+    f = lambda x: x * (x - 1)
     s = 0
     dx = (b - a) / N
     for i in range(int(N)):
@@ -99,8 +99,6 @@ def test_df_integrate(benchmark, df_integrate):
 def test_df_integrate_2(benchmark, df_integrate):
     df_integrate['integrate'] = benchmark(
         lambda df: [integrate_f(a, b, N) for a, b, N in df[['a', 'b', 'N']].to_numpy().tolist()], df_integrate)
-    # df_integrate['integrate'] = benchmark(
-    #     lambda df: [*map(integrate_f, df['a', 'b', 'N'].to_numpy().tolist())], df_integrate)
     print(df_integrate.info)
 
 
