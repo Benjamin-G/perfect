@@ -1,3 +1,4 @@
+import functools
 from random import randrange
 
 import numpy as np
@@ -107,3 +108,35 @@ def test_df_integrate_3(benchmark, df_integrate):
         lambda df: [*map(integrate_f, df['a'].to_numpy(), df['b'].to_numpy(),
                          df['N'].to_numpy())], df_integrate)
     print(df_integrate.info)
+
+
+def log_error(logger):
+    def decorated(f):
+        @functools.wraps(f)
+        def wrapped(*args, **kwargs):
+            try:
+                return f(*args, **kwargs)
+            except Exception as e:
+                if logger:
+                    print('logging error')
+                    logger.info(e)
+                # raise
+
+        return wrapped
+
+    return decorated
+
+
+import logging
+
+logger = logging.getLogger()
+
+
+@log_error(logger)
+def f():
+    raise Exception('I am exceptional')
+
+
+def test_log_error():
+    f()
+    assert True
