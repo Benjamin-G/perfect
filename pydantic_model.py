@@ -1,9 +1,9 @@
 import re
 from random import randrange
-from typing import List, Dict
+from typing import List, Dict, Tuple
 
+import numpy as np
 import pandas as pd
-from IPython.core.display_functions import display
 from faker import Faker
 from pandas import DataFrame
 from prefect import task
@@ -77,11 +77,34 @@ def create_dataframe_pydantic() -> DataFrame:
 
     df = pd.DataFrame(map(dict, dicts))
 
-    display(df['friends'])
+    # display(df['friends'])
     # df['name'] = df['name'].map('I am {}'.format)
-    display(df)
+    # display(df)
     # print(df.dtypes)
     # display(df['friends'].str.join(','))
     # print(df['friends'].str.join(',').str.contains('Lisa|Eric|John'))
 
+    return df
+
+
+def sin_with_label(v: np.float64) -> Tuple[float, str]:
+    s = f'[{type(v).__name__}] sin of {v.astype(str)} is {"even" if v % 2 == 0 else "odd"}'
+    return np.sin(v), s
+
+
+def sin_with_label_2(v: float) -> Tuple[float, str]:
+    s = f'[{type(v).__name__}] sin of {v} is {"even" if v % 2 == 0 else "odd"}'
+    return np.sin(v), s
+
+
+def sin_with_label_row(row: pd.Series) -> Tuple[float, str]:
+    s = f'[{type(row["num1"]).__name__}] sin of {row["num1"].astype(str)} is {"even" if row["num1"] % 2 == 0 else "odd"}'
+    return np.sin(row["num1"]), s
+
+
+def sin_return_df(df: DataFrame) -> DataFrame:
+    df['sin_of_num1'] = np.sin(df['num1'])
+    df['label'] = df["num1"].astype(str).map(
+        lambda s: f'[{type(s).__name__}] sin of {s} if {"even" if float(s) % 2 == 0 else "odd"}')
+    # s = f'[{type(row).__name__}] sin of {row["num1"].astype(str)}'
     return df
